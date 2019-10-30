@@ -1,6 +1,6 @@
 import threading
 from time import sleep
-from delay import delay
+from delay import Delay
 
 class Simulator:
 	def __init__ (self, cv):
@@ -67,7 +67,7 @@ class Simulator:
 			# print ("Wait over. Starting new thread")
 
 			# Okay. Good to go. Start a new thread.
-			d = delay()
+			d = Delay()
 			t = threading.Thread(target=d.start_a_delay, args=(4,200,lambda : (not running())))
 			t.daemon = True
 			started_threads.append(t)

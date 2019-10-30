@@ -3,7 +3,7 @@ import datetime
 import threading
 from time import sleep
 
-class delay:
+class Delay:
 
 	def start_a_delay (self, num_of_digits, how_many_times, stop):
 
