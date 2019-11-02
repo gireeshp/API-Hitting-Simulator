@@ -9,9 +9,6 @@ class Simulator:
 		"""
 		self.cv = cv
 
-	def is_running (self):
-		return self.cv.running
-
 	def stop (self):
 		self.cv.running = False
 
@@ -48,7 +45,7 @@ class Simulator:
 
 	def run(self, total, parallel, running):
 		print ("Restarted..")
-		i = 1
+		self.cv.current_counter = 1
 		started_threads = []
 
 		"""
@@ -57,9 +54,11 @@ class Simulator:
 		"""
 		print ("Inside run. Running Flag: {}. Total: {}".format(running(), total()))
 
-		while running() and i <= total():
+		while running() and self.cv.current_counter <= total():
 
-			print ("Target: {}. Current: {}.  Parallel: {}. Current: {}".format(total(), i, parallel(), len(started_threads)))
+			self.cv.current_parallel = len(started_threads)
+
+			print ("Target: {}. Current: {}.  Parallel: {}. Current: {}".format(total(), self.cv.current_counter, parallel(), self.cv.current_parallel))
 
 			# Wait for a chance before starting new thread
 			self.wait_till_I_get_a_chance(started_threads, parallel)
@@ -73,10 +72,10 @@ class Simulator:
 			started_threads.append(t)
 			t.start()
 
-			# print ("Started new thread. Current running queue size: {}".format(len(started_threads)))
+			# print ("Started new thread. Current running queue size: {}".format(self.cv.current_parallel))
 
 			# Counter goes up
-			i+=1
+			self.cv.current_counter+=1
 
 		if running():
 			print ("Submitted all {} jobs.".format(total()))
@@ -93,7 +92,7 @@ class Simulator:
 		print ("All done.")
 
 		self.cv.running = False
-		print ("Current running status inside simulator: {}".format(self.is_running()))
+		print ("Current running status inside simulator: {}".format(self.cv.running))
 
 		return
 
@@ -106,6 +105,7 @@ class Simulator:
 		while True:
 			# print ("Current queue size: {}".format(len(started_threads)))
 			if len(started_threads) < parallel():
+				self.cv.current_parallel = len(started_threads)
 				# print ("Cool. Under the limit")
 				# Okay. Now the parent program can start a new thread
 				return
@@ -164,3 +164,5 @@ class ControlVariables():
 	total_threads = 50
 	parallel_threads = 5
 	running = False
+	current_counter = 0
+	current_parallel = 0

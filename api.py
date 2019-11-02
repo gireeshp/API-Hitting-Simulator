@@ -14,12 +14,14 @@ def load_template():
 
 @app.route("/status", methods=['GET'])
 def status():
-	responseJson = {"message": "Simulator is "+("" if s.is_running() else "not")+" running.",
-					"total": cv.total_threads,
-					"parallel": cv.parallel_threads,
-					"running": cv.running
+	responseJson = {"message": "Simulator is "+("" if cv.running else "not")+" running.",
+					"total_threads": cv.total_threads,
+					"parallel_threads": cv.parallel_threads,
+					"running": cv.running,
+					"current_counter": cv.current_counter,
+					"current_parallel": cv.current_parallel
 					}
-	print (responseJson)
+	# print (responseJson)
 
 	return Response(dumps(responseJson), mimetype="application/json")
 
@@ -28,9 +30,9 @@ def start():
 	# global total_threads, parallel_threads, running
 
 	# print ("Input received. Total: {}. Parallel: {}".format(total_threads, parallel_threads))
-	# print ("Current status: {}".format(s.is_running()))
+	# print ("Current status: {}".format(cv.running))
 
-	if s.is_running():
+	if cv.running:
 		print ("Simulator is already running.")
 		return Response(dumps({"message": "Simulator is already running."}), mimetype="application/json")
 
@@ -55,7 +57,7 @@ def start():
 def modify():
 	# global total_threads, parallel_threads, running
 
-	if not s.is_running():
+	if not cv.running:
 		print ("Simulator is not running. Please start it using /start.")
 		return Response(dumps({"message": "Simulator is not running. Please start it using /start."}), mimetype="application/json")
 
@@ -79,7 +81,7 @@ def modify():
 def stop():
 	# global total_threads, parallel_threads, running
 
-	if not s.is_running():
+	if not cv.running:
 		print ("Simulator is not running. Please start it using /start.")
 		return Response(dumps({"message": "Simulator is not running. Please start it using /start."}), mimetype="application/json")
 
@@ -89,6 +91,6 @@ def stop():
 
 	print ("total: {}. parallel: {}. running: {}".format(cv.total_threads, cv.parallel_threads, cv.running))
 
-	s.stop()
+	s.stop() 
 
 	return Response(dumps({"message": "Stopped the simulator"}), mimetype="application/json")
