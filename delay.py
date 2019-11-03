@@ -1,9 +1,18 @@
+# from simulator import Simulator, ControlVariables
 from random import randint
 import datetime
 import threading
 from time import sleep
+import requests
 
 class Delay:
+
+	def __init__ (self, cv):
+		self.cv = cv
+
+	def hit_a_url (self, url, parameters):
+		r = requests.post (url=url, json=parameters)
+		self.cv.output = r.json()
 
 	def start_a_delay (self, num_of_digits, how_many_times, stop):
 

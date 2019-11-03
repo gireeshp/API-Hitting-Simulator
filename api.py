@@ -19,7 +19,9 @@ def status():
 					"parallel_threads": cv.parallel_threads,
 					"running": cv.running,
 					"current_counter": cv.current_counter,
-					"current_parallel": cv.current_parallel
+					"current_parallel": cv.current_parallel,
+					"url": cv.url,
+					"parameters": cv.parameters
 					}
 	# print (responseJson)
 
@@ -39,16 +41,22 @@ def start():
 	# Get the parameters from user. If not given, default them
 	total = request.args.get("total", 50)
 	parallel = request.args.get("parallel", 5)
+	url = request.args.get("url", 5)
+	parameters = request.args.get("parameters", 5)
 
 	# Assign to global variables
 	cv.total_threads = int(total)
 	cv.parallel_threads = int(parallel)
+	cv.url = url
+	cv.parameters = parameters
 	cv.running = True
 
+	print ("URL: {}".format(url))
+	print ("Parameters: {}".format(parameters))
 	print ("total: {}. parallel: {}. running: {}".format(cv.total_threads, cv.parallel_threads, cv.running))
 
 	# Start new simulator thread
-	t = threading.Thread (target=s.start_simulator, args=(lambda:cv.total_threads, lambda:cv.parallel_threads, lambda:cv.running))
+	t = threading.Thread (target=s.start_simulator, args=(lambda:cv.total_threads, lambda:cv.parallel_threads, lambda:cv.running, url, parameters))
 	t.start()
 	return Response(dumps({"message": "Started the simulator"}), mimetype="application/json")
 	# return "Started the simulator", 200

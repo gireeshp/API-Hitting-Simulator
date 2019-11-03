@@ -1,6 +1,7 @@
 import threading
 from time import sleep
 from delay import Delay
+import requests
 
 class Simulator:
 	def __init__ (self, cv):
@@ -12,7 +13,7 @@ class Simulator:
 	def stop (self):
 		self.cv.running = False
 
-	def start_simulator(self, total, parallel, running):
+	def start_simulator(self, total, parallel, running, url, parameters):
 		"""
 		Start the simulator by setting running flag to True &
 		by invoking run() method
@@ -26,7 +27,7 @@ class Simulator:
 
 		# self.running = running()
 		print ("Started")
-		self.run(total, parallel, running)
+		self.run(total, parallel, running, url, parameters)
 
 		return
 
@@ -43,8 +44,7 @@ class Simulator:
 
 	# 	return
 
-	def run(self, total, parallel, running):
-		print ("Restarted..")
+	def run(self, total, parallel, running, url, parameters):
 		self.cv.current_counter = 1
 		started_threads = []
 
@@ -63,16 +63,12 @@ class Simulator:
 			# Wait for a chance before starting new thread
 			self.wait_till_I_get_a_chance(started_threads, parallel)
 
-			# print ("Wait over. Starting new thread")
-
 			# Okay. Good to go. Start a new thread.
-			d = Delay()
-			t = threading.Thread(target=d.start_a_delay, args=(4,200,lambda : (not running())))
+			d = Delay(self.cv)
+			t = threading.Thread(target=d.hit_a_url, args=(self.cv.url, self.cv.parameters))
 			t.daemon = True
 			started_threads.append(t)
 			t.start()
-
-			# print ("Started new thread. Current running queue size: {}".format(self.cv.current_parallel))
 
 			# Counter goes up
 			self.cv.current_counter+=1
@@ -133,8 +129,14 @@ class Simulator:
 			for t in started_threads:
 				t.join()
 
-# if __name__ == "__main__":
-# 	s = Simulator()
+if __name__ == "__main__":
+	url = "http://127.0.0.1:8081/delay"
+	parameters = '{"name":"Gireesh2"}'
+
+	r = requests.post (url=url, json=parameters)
+	print (r.json())
+
+	# s = Simulator()
 # 	total = 50
 # 	parallel = 3
 # 	running = True
@@ -166,3 +168,6 @@ class ControlVariables():
 	running = False
 	current_counter = 0
 	current_parallel = 0
+	url = ""
+	parameters = ""
+	output = ""

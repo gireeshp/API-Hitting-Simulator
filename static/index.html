@@ -1,15 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Simulator Demo</title>
+	<title>Rest API load simulator</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 </head>
 <body>
 	<div class="container" align="center">
-		<h1 align="center">Simulator Control</h1>
-		<div class="row">
-			<form id="inputform">
+		<h1 class="text-center">Simulate high load on your REST API</h1>
+		<form id="inputform">
+<!-- 
+			<div class="row">
+				<div class="col-sm-3 text-right">
+					<label for="url" class="col-form-label text-right">URL</label>
+				</div>				
+				<div class="col-sm-9">
+					<input type="text" class="form-control" id="url" name="url" placeholder="Enter URL" >
+				</div>
+			</div>
+
+			<div class="row mt-1">
+				<div class="col-sm-3 text-right">
+					<label for="parameters" class="col-form-label text-right">Parameters</label>
+				</div>				
+				<div class="col-sm-9">
+					<input type="text" class="form-control" id="parameters" name="parameters" placeholder="Enter Parameters" >
+				</div>
+			</div>
+ -->
+
+	
 				<table>
+					<tr>
+						<td>URL</td>
+						<td><input type="textarea" id="url" name="url" placeholder="Enter URL" class="form-control"></td>					
+					</tr>
+					<tr>
+						<td>Parameters</td>
+						<td><input type="textarea" id="parameters" name="parameters" placeholder="Enter Parameters" class="form-control"></td>					
+					</tr>
+
 					<tr>
 						<td>Total</td>
 						<td><input type="text" id="total" name="total" placeholder="Enter total number of jobs" class="form-control"></td>
@@ -39,8 +68,7 @@
 				</div>
 
 
-			</form>
-		</div>
+		</form>
 	</div>
 
 	<div class="container" align="center">
@@ -66,11 +94,10 @@
 
 		$(document).ready(function(){
 
-			console.log("document ready");
-	
+			var firstTime = true;
 			var baseUrl = "http://127.0.0.1:5000/";
 
-			function start() {
+			function start(callback) {
 
 				console.log("Inside start")
 
@@ -80,11 +107,15 @@
 
 				var total=$("#inputform").find("input[name=total]").val();
 				var parallel=$("#inputform").find("input[name=parallel]").val();
+				var url=$("#inputform").find("input[name=url]").val();
+				var parameters=$("#inputform").find("input[name=parameters]").val();
 
 				var startUrl = buildUrl(baseUrl+"start", "total", encodeURIComponent(total));
 				startUrl = buildUrl(startUrl, "parallel", encodeURIComponent(parallel));
+				startUrl = buildUrl(startUrl, "url", encodeURIComponent(url));
+				startUrl = buildUrl(startUrl, "parameters", encodeURIComponent(parameters));
 
-				console.log("Total: "+total+". Parallel: "+parallel+". URL: "+startUrl);
+				console.log("URL: "+startUrl);
 
 				$.get(startUrl, function(output) {
 					if(!output) return;
@@ -130,6 +161,7 @@
 				alert ("Stopped the Simulator")
 			}
 
+
 			function validateInput() {
 
 				console.log("Inside validateInput: "+$("#inputform").find("input[name=total]").val())
@@ -151,27 +183,49 @@
 
 			function status() {
 
-				var stopUrl = baseUrl+"status";
+				console.log("inside status. First time: "+firstTime);
 
-				$.get(stopUrl, function(output) {
+				var statusUrl = baseUrl+"status";
+
+				$.get(statusUrl, function(output) {
 					if(!output) return;
 
 					if (output.running) {
 
+						console.log("Simulator running")
+
 						$("#progress-outer-div").show();
+
+
+						$("#url").attr("disabled", true);
+						$("#parameters").attr("disabled", true);
 
 						$("#start-btn").attr("disabled", true);
 						$("#modify-btn").attr("disabled", false);
 						$("#stop-btn").attr("disabled", false);
 
-						if (!$("#inputform").find("input[name=total]").val()) {
-							$("#inputform").find("input[name=total]").val(output.total);
-							$("#inputform").find("input[name=parallel]").val(output.parallel);
+						console.log(firstTime);
+
+						if (firstTime) {
+							console.log("It's true. "+output.total_threads+" "+output.parallel_threads);
+							$("#inputform").find("input[name=url]").val(output.url);
+							$("#inputform").find("input[name=parameters]").val(output.parameters);
+							$("#inputform").find("input[name=total]").val(output.total_threads);
+							$("#inputform").find("input[name=parallel]").val(output.parallel_threads);
+
+							// No need to do this again.
+							firstTime = false;
+
+						} else {
+							console.log("It's false");
 						}
 
 					} else {
 
 						$("#progress-outer-div").hide();
+
+						$("#url").attr("disabled", false);
+						$("#parameters").attr("disabled", false);
 
 						$("#start-btn").attr("disabled", false);
 						$("#modify-btn").attr("disabled", true);
@@ -235,26 +289,33 @@
 				iFrame.src = iFrame.src;
 			}
 
-			// Restrict input to digits and '.' by using a regular expression filter.
-			setInputFilter(document.getElementById("total"), function(value) {
-			  return /^\d*$/.test(value);
-			});
-			setInputFilter(document.getElementById("parallel"), function(value) {
-			  return /^\d*$/.test(value);
-			});
+			function init(callback) {
+				console.log(firstTime);
+				console.log("document ready");
 
-			// Assign functions to buttons.
-			$("#start-btn").click(start);
-			$("#modify-btn").click(modify);
-			$("#stop-btn").click(stop);
-			$("#refresh-btn").click(refreshFrame);
+				// Restrict input to digits and '.' by using a regular expression filter.
+				setInputFilter(document.getElementById("total"), function(value) {
+				  return /^\d*$/.test(value);
+				});
+				setInputFilter(document.getElementById("parallel"), function(value) {
+				  return /^\d*$/.test(value);
+				});
 
+				// Assign functions to buttons.
+				$("#start-btn").click(start);
+				$("#modify-btn").click(modify);
+				$("#stop-btn").click(stop);
+				$("#refresh-btn").click(refreshFrame);
 
-			// Call status once on page load
-			status();
+				// Call status() once.
+				callback();
 
-			// Refresh the status every 5 seconds
-			myStatus = setInterval(status, 5000);
+				// Refresh the status every 5 seconds
+				myStatus = setInterval(status, 5000);
+			};
+
+			init(status);
+
 		});
 	</script>
 
