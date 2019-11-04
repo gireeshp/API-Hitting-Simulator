@@ -35,8 +35,12 @@
 						<td><input type="textarea" id="url" name="url" placeholder="Enter URL" class="form-control"></td>					
 					</tr>
 					<tr>
-						<td>Parameters</td>
-						<td><input type="textarea" id="parameters" name="parameters" placeholder="Enter Parameters" class="form-control"></td>					
+						<td>JSON</td>
+						<td><input type="textarea" id="json" name="json" placeholder="Enter Input JSON" class="form-control"></td>					
+					</tr>
+					<tr>
+						<td>Headers</td>
+						<td><input type="textarea" id="headers" name="headers" placeholder="Enter Headers" class="form-control"></td>					
 					</tr>
 
 					<tr>
@@ -97,7 +101,7 @@
 			var firstTime = true;
 			var baseUrl = "http://127.0.0.1:5000/";
 
-			function start(callback) {
+			function start() {
 
 				console.log("Inside start")
 
@@ -108,12 +112,14 @@
 				var total=$("#inputform").find("input[name=total]").val();
 				var parallel=$("#inputform").find("input[name=parallel]").val();
 				var url=$("#inputform").find("input[name=url]").val();
-				var parameters=$("#inputform").find("input[name=parameters]").val();
+				var json=$("#inputform").find("input[name=json]").val();
+				var headers=$("#inputform").find("input[name=headers]").val();
 
 				var startUrl = buildUrl(baseUrl+"start", "total", encodeURIComponent(total));
 				startUrl = buildUrl(startUrl, "parallel", encodeURIComponent(parallel));
 				startUrl = buildUrl(startUrl, "url", encodeURIComponent(url));
-				startUrl = buildUrl(startUrl, "parameters", encodeURIComponent(parameters));
+				startUrl = buildUrl(startUrl, "json", encodeURIComponent(json));
+				startUrl = buildUrl(startUrl, "headers", encodeURIComponent(headers));
 
 				console.log("URL: "+startUrl);
 
@@ -164,7 +170,11 @@
 
 			function validateInput() {
 
-				console.log("Inside validateInput: "+$("#inputform").find("input[name=total]").val())
+				if (!$("#inputform").find("input[name=url]").val()) {
+					$("#inputform").find("input[name=url]").focus()
+					alert ("Please provide the URL required")
+					return false
+				}
 
 				if (!$("#inputform").find("input[name=total]").val()) {
 					$("#inputform").find("input[name=total]").focus()
@@ -198,38 +208,36 @@
 
 
 						$("#url").attr("disabled", true);
-						$("#parameters").attr("disabled", true);
+						$("#json").attr("disabled", true);
+						$("#headers").attr("disabled", true);
 
 						$("#start-btn").attr("disabled", true);
 						$("#modify-btn").attr("disabled", false);
 						$("#stop-btn").attr("disabled", false);
-
-						console.log(firstTime);
-
-						if (firstTime) {
-							console.log("It's true. "+output.total_threads+" "+output.parallel_threads);
-							$("#inputform").find("input[name=url]").val(output.url);
-							$("#inputform").find("input[name=parameters]").val(output.parameters);
-							$("#inputform").find("input[name=total]").val(output.total_threads);
-							$("#inputform").find("input[name=parallel]").val(output.parallel_threads);
-
-							// No need to do this again.
-							firstTime = false;
-
-						} else {
-							console.log("It's false");
-						}
 
 					} else {
 
 						$("#progress-outer-div").hide();
 
 						$("#url").attr("disabled", false);
-						$("#parameters").attr("disabled", false);
+						$("#json").attr("disabled", false);
+						$("#headers").attr("disabled", false);
 
 						$("#start-btn").attr("disabled", false);
 						$("#modify-btn").attr("disabled", true);
 						$("#stop-btn").attr("disabled", true);
+					}
+
+					if (firstTime) {
+						console.log("It's true. "+output.total_threads+" "+output.parallel_threads);
+						$("#inputform").find("input[name=url]").val(output.url);
+						$("#inputform").find("input[name=json]").val(output.json);
+						$("#inputform").find("input[name=headers]").val(output.headers);
+						$("#inputform").find("input[name=total]").val(output.total_threads);
+						$("#inputform").find("input[name=parallel]").val(output.parallel_threads);
+
+						// No need to do this again.
+						firstTime = false;
 					}
 
 					msg = output.message;

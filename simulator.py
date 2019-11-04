@@ -13,7 +13,7 @@ class Simulator:
 	def stop (self):
 		self.cv.running = False
 
-	def start_simulator(self, total, parallel, running, url, parameters):
+	def start_simulator(self, total, parallel, running, url, json, headers):
 		"""
 		Start the simulator by setting running flag to True &
 		by invoking run() method
@@ -27,7 +27,7 @@ class Simulator:
 
 		# self.running = running()
 		print ("Started")
-		self.run(total, parallel, running, url, parameters)
+		self.run(total, parallel, running, url, json, headers)
 
 		return
 
@@ -44,7 +44,7 @@ class Simulator:
 
 	# 	return
 
-	def run(self, total, parallel, running, url, parameters):
+	def run(self, total, parallel, running, url, json, headers):
 		self.cv.current_counter = 1
 		started_threads = []
 
@@ -65,7 +65,7 @@ class Simulator:
 
 			# Okay. Good to go. Start a new thread.
 			d = Delay(self.cv)
-			t = threading.Thread(target=d.hit_a_url, args=(self.cv.url, self.cv.parameters))
+			t = threading.Thread(target=d.hit_a_url, args=(self.cv.url, self.cv.json, self.cv.headers))
 			t.daemon = True
 			started_threads.append(t)
 			t.start()
@@ -131,9 +131,10 @@ class Simulator:
 
 if __name__ == "__main__":
 	url = "http://127.0.0.1:8081/delay"
-	parameters = '{"name":"Gireesh2"}'
+	json = '{"name":"Gireesh2"}'
+	headers = ""
 
-	r = requests.post (url=url, json=parameters)
+	r = requests.post (url=url, json=json, headers=headers)
 	print (r.json())
 
 	# s = Simulator()
@@ -169,5 +170,6 @@ class ControlVariables():
 	current_counter = 0
 	current_parallel = 0
 	url = ""
-	parameters = ""
+	json = None
+	headers = None
 	output = ""

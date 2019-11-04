@@ -1,7 +1,7 @@
 from flask import Flask, request, Response
 from simulator import Simulator, ControlVariables
 import threading
-from json import dumps
+import json
 
 app = Flask(__name__)
 
@@ -21,11 +21,12 @@ def status():
 					"current_counter": cv.current_counter,
 					"current_parallel": cv.current_parallel,
 					"url": cv.url,
-					"parameters": cv.parameters
+					"json": cv.json,
+					"headers": cv.headers
 					}
 	# print (responseJson)
 
-	return Response(dumps(responseJson), mimetype="application/json")
+	return Response(json.dumps(responseJson), mimetype="application/json")
 
 @app.route("/start", methods=['GET'])
 def start():
@@ -36,29 +37,33 @@ def start():
 
 	if cv.running:
 		print ("Simulator is already running.")
-		return Response(dumps({"message": "Simulator is already running."}), mimetype="application/json")
+		return Response(json.dumps({"message": "Simulator is already running."}), mimetype="application/json")
 
 	# Get the parameters from user. If not given, default them
 	total = request.args.get("total", 50)
 	parallel = request.args.get("parallel", 5)
-	url = request.args.get("url", 5)
-	parameters = request.args.get("parameters", 5)
+	url = request.args.get("url", "")
+	json_s = request.args.get("json", "")
+	headers = json.loads(request.args.get("headers"))
+	print (headers)
 
 	# Assign to global variables
 	cv.total_threads = int(total)
 	cv.parallel_threads = int(parallel)
 	cv.url = url
-	cv.parameters = parameters
+	cv.json = json_s
+	cv.headers = headers
 	cv.running = True
 
 	print ("URL: {}".format(url))
-	print ("Parameters: {}".format(parameters))
+	print ("Json: {}".format(json))
+	print ("Headers: {}".format(headers))
 	print ("total: {}. parallel: {}. running: {}".format(cv.total_threads, cv.parallel_threads, cv.running))
 
 	# Start new simulator thread
-	t = threading.Thread (target=s.start_simulator, args=(lambda:cv.total_threads, lambda:cv.parallel_threads, lambda:cv.running, url, parameters))
+	t = threading.Thread (target=s.start_simulator, args=(lambda:cv.total_threads, lambda:cv.parallel_threads, lambda:cv.running, url, json, headers))
 	t.start()
-	return Response(dumps({"message": "Started the simulator"}), mimetype="application/json")
+	return Response(json.dumps({"message": "Started the simulator"}), mimetype="application/json")
 	# return "Started the simulator", 200
 
 @app.route("/modify", methods=['GET'])
@@ -67,7 +72,7 @@ def modify():
 
 	if not cv.running:
 		print ("Simulator is not running. Please start it using /start.")
-		return Response(dumps({"message": "Simulator is not running. Please start it using /start."}), mimetype="application/json")
+		return Response(json.dumps({"message": "Simulator is not running. Please start it using /start."}), mimetype="application/json")
 
 	# Get the parameters from user. If not given, default them
 	total = request.args.get("total", 50)
@@ -83,7 +88,7 @@ def modify():
 
 	# Simulator will automatically take the modified parameters
 
-	return Response(dumps({"message": "Modified the parallel counter"}), mimetype="application/json")
+	return Response(json.dumps({"message": "Modified the parallel counter"}), mimetype="application/json")
 
 @app.route("/stop", methods=['GET'])
 def stop():
@@ -91,7 +96,7 @@ def stop():
 
 	if not cv.running:
 		print ("Simulator is not running. Please start it using /start.")
-		return Response(dumps({"message": "Simulator is not running. Please start it using /start."}), mimetype="application/json")
+		return Response(json.dumps({"message": "Simulator is not running. Please start it using /start."}), mimetype="application/json")
 
 	print ("Stopping..")
 
@@ -101,4 +106,4 @@ def stop():
 
 	s.stop() 
 
-	return Response(dumps({"message": "Stopped the simulator"}), mimetype="application/json")
+	return Response(json.dumps({"message": "Stopped the simulator"}), mimetype="application/json")

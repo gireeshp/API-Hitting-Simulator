@@ -4,14 +4,15 @@ import datetime
 import threading
 from time import sleep
 import requests
+import json
 
 class Delay:
 
 	def __init__ (self, cv):
 		self.cv = cv
 
-	def hit_a_url (self, url, parameters):
-		r = requests.post (url=url, json=parameters)
+	def hit_a_url (self, url, json, headers):
+		r = requests.post (url=url, json=json, headers=headers)
 		self.cv.output = r.json()
 
 	def start_a_delay (self, num_of_digits, how_many_times, stop):
@@ -53,8 +54,18 @@ class Delay:
 
 if __name__ == "__main__":
 
-	flag = False
-	print (not flag)
+	json_s = '{"name": "Gireesh", "col2": "val2"}'
+	print (json_s)
+	print (type(json_s))
+
+	json_d = json.loads(json_s)
+	print (json_d)
+	print (type(json))
+
+	url = "http://127.0.0.1:8081/delay"
+
+	r = requests.post (url=url, json=None, headers=None)
+	print (r.json())
 
 	"""
 	# slow_down(4, 500)
