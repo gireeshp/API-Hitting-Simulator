@@ -29,9 +29,7 @@ class Delay:
 			i+=1
 			r = randint(10000, 99999)
 			if r%mul == 0:
-				diff = self.get_the_time_difference(start_time)
 				match_count+=1
-				# print ("Got match {} in attempt {} ({} seconds). Random number was: {}".format(match_count, i, diff, r))
 			
 			if (match_count >= how_many_times):
 				diff = self.get_the_time_difference(start_time)

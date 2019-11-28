@@ -7,28 +7,7 @@
 <body>
 	<div class="container" align="center">
 		<h1 class="text-center">Simulate high load on your REST API</h1>
-		<form id="inputform">
-<!-- 
-			<div class="row">
-				<div class="col-sm-3 text-right">
-					<label for="url" class="col-form-label text-right">URL</label>
-				</div>				
-				<div class="col-sm-9">
-					<input type="text" class="form-control" id="url" name="url" placeholder="Enter URL" >
-				</div>
-			</div>
-
-			<div class="row mt-1">
-				<div class="col-sm-3 text-right">
-					<label for="parameters" class="col-form-label text-right">Parameters</label>
-				</div>				
-				<div class="col-sm-9">
-					<input type="text" class="form-control" id="parameters" name="parameters" placeholder="Enter Parameters" >
-				</div>
-			</div>
- -->
-
-	
+		<form id="inputform" autocomplete="on">
 				<table>
 					<tr>
 						<td>URL</td>
@@ -60,7 +39,7 @@
 						<td><button disabled class="btn btn-default" type="button" id="stop-btn">Stop</button></td>
 					</tr>
 				</table>
-				<!-- <input type="text" name="msg" class="form-control"> -->
+
 				<h4 align="center" id="message"></h4>
 
 				<div class="container" id="progress-outer-div">
@@ -241,24 +220,20 @@
 					}
 
 					msg = output.message;
-					// if (output.running) {
-					// 	msg = msg + "\n" + "Submitted "+output.current_counter+" (of "+output.total_threads+") jobs. Current jobs running in parallel: "+output.current_parallel+".";
-					// }
 					$("#message").text(msg);
 
-
 					var completed = parseInt(output.current_counter) - parseInt(output.current_parallel);
-					var pending = parseInt(output.total_threads) - parseInt(output.current_counter);
+					// var pending = parseInt(output.total_threads) - parseInt(output.current_counter);
 					var parallel = parseInt(output.current_parallel);
-
 
 					var completed_perc = (completed/output.total_threads)*100;
 					var running_perc = (parallel/output.total_threads)*100;
-					var pending_perc = (pending/output.total_threads)*100;
+					// var pending_perc = (pending/output.total_threads)*100;
 
 					completed_perc = Math.round(completed_perc * 100) / 100;				
 					running_perc = Math.round(running_perc * 100) / 100;				
-					pending_perc = Math.round(pending_perc * 100) / 100;				
+					// pending_perc = Math.round(pending_perc * 100) / 100;
+					pending_perc = 100 - (completed_perc + running_perc);
 
 					$("#prg-completed").text(completed_perc + "%");
 					$("#prg-completed").width(completed_perc + "%");

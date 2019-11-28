@@ -19,30 +19,10 @@ class Simulator:
 		by invoking run() method
 		"""
 
-		# print ("Inside Start. Total {} and a parallel {}".format(self.total, self.parallel))
-
-		# if self.running:
-		# 	print ("Similator is running already. Nothing to do.")
-		# 	return
-
-		# self.running = running()
 		print ("Started")
 		self.run(total, parallel, running, url, json, headers)
 
 		return
-
-	# def stop(self, total, parallel, running):
-	# 	"""
-	# 	Stop the simulator by setting running flag to False
-	# 	"""
-	# 	if not self.running:
-	# 		print ("Simulator is not running. Nothing to do.") 
-	# 		return
-
-	# 	self.running = False
-	# 	print ("Stopped")
-
-	# 	return
 
 	def run(self, total, parallel, running, url, json, headers):
 		self.cv.current_counter = 1
@@ -136,32 +116,6 @@ if __name__ == "__main__":
 
 	r = requests.post (url=url, json=json, headers=headers)
 	print (r.json())
-
-	# s = Simulator()
-# 	total = 50
-# 	parallel = 3
-# 	running = True
-
-# 	t = threading.Thread (target=s.start_simulator, args=(lambda:total, lambda:parallel, lambda:running))
-# 	t.start()
-
-# 	print ("Started main thread. Goint to sleep for 2 seconds.")
-# 	sleep(2)
-# 	parallel = 5
-# 	print ("Changed the parallel count to 5. Going to sleep for 5 seconds")
-# 	sleep(5)
-# 	total = 100
-# 	parallel = 20
-# 	print ("Changed the total tasks to 100 & parallel to 20. Going to sleep for 30 seconds")
-# 	sleep(30)
-# 	parallel = 5
-# 	print ("Reducing parallel back to 5. Going to sleep for 60 seconds.")
-# 	sleep(60)
-# 	print ("Going to stop the simulator")
-# 	running = False
-# 	print ("Now waiting for the thread to finish.")
-# 	t.join()
-# 	print ("All done")
 
 class ControlVariables():
 	total_threads = 50

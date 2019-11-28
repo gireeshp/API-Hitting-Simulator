@@ -44,9 +44,15 @@ def start():
 	parallel = request.args.get("parallel", 5)
 	url = request.args.get("url", "")
 	json_s = request.args.get("json", "")
-	headers = json.loads(request.args.get("headers"))
-	print (headers)
+	header_s = request.args.get("headers", "")
+	headers = None
 
+	try:
+		headers = json.loads(header_s)
+		print (headers)
+	except:
+		pass
+	
 	# Assign to global variables
 	cv.total_threads = int(total)
 	cv.parallel_threads = int(parallel)
