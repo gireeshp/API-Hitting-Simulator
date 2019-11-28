@@ -1,4 +1,4 @@
-### Kubernetes auto scaling demo
+### Simulator
 
 This is a simple simulator engine which can be used to hit a URL 'x' number of times with 'y' parallel hits. It shows the completed hits, current parallel attempts & the pending attempts.   
 
