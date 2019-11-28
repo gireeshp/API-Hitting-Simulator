@@ -54,7 +54,7 @@
 		</form>
 	</div>
 
-	<div class="container" align="center">
+	<!-- <div class="container" align="center">
 		<table width="85%">
 			<col width="95%">
   			<col width="5">
@@ -70,7 +70,7 @@
 				</td>
 			</tr>
 		</table>
-	</div>
+	</div> -->
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script type="text/javascript">
@@ -267,10 +267,10 @@
 			  });
 			}
 
-			function refreshFrame() {
-				iFrame = document.getElementById("dashboard");
-				iFrame.src = iFrame.src;
-			}
+			// function refreshFrame() {
+			// 	iFrame = document.getElementById("dashboard");
+			// 	iFrame.src = iFrame.src;
+			// }
 
 			function init(callback) {
 				console.log(firstTime);
@@ -288,7 +288,7 @@
 				$("#start-btn").click(start);
 				$("#modify-btn").click(modify);
 				$("#stop-btn").click(stop);
-				$("#refresh-btn").click(refreshFrame);
+				// $("#refresh-btn").click(refreshFrame);
 
 				// Call status() once.
 				callback();

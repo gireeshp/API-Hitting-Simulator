@@ -1,21 +1,21 @@
-### API-Hitting-Simulator
+### Kubernetes auto scaling demo
 
 This is a simple simulator engine which can be used to hit a URL 'x' number of times with 'y' parallel hits. It shows the completed hits, current parallel attempts & the pending attempts.   
 
 
 ## Initial setup:
 ```
-(base) K8-Auto-Scaling-Demo$ conda create -n k8-auto-scale-demo python=3.7 anaconda
-(base) K8-Auto-Scaling-Demo$ conda activate k8-auto-scale-demo
-(k8-auto-scale-demo) K8-Auto-Scaling-Demo$ conda install -c anaconda flask
-(k8-auto-scale-demo) K8-Auto-Scaling-Demo$ conda install requests
+(base) API-Hitting-Simulator$ conda create -n simulator python=3.7 anaconda
+(base) API-Hitting-Simulator$ conda activate simulator
+(simulator) API-Hitting-Simulator$ conda install -c anaconda flask
+(simulator) API-Hitting-Simulator$ conda install requests
 ```
 
 ## Run the app:
 ```
-(k8-auto-scale-demo) K8-Auto-Scaling-Demo$ export FLASK_APP=api.py 
-(k8-auto-scale-demo) K8-Auto-Scaling-Demo$ export FLASK_ENV=development
-(k8-auto-scale-demo) K8-Auto-Scaling-Demo$ flask run
+(simulator) API-Hitting-Simulator$ export FLASK_APP=api.py 
+(simulator) API-Hitting-Simulator$ export FLASK_ENV=development
+(simulator) API-Hitting-Simulator$ flask run
  * Serving Flask app "api.py" (lazy loading)
  * Environment: development
  * Debug mode: on
