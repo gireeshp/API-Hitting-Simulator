@@ -1,9 +1,9 @@
-### Simulator
+## Simulator
 
 This is a simple simulator engine which can be used to hit a URL 'x' number of times with 'y' parallel hits. It shows the completed hits, current parallel attempts & the pending attempts.   
 
 
-## Initial setup:
+### Initial setup:
 ```
 (base) API-Hitting-Simulator$ conda create -n simulator python=3.7 anaconda
 (base) API-Hitting-Simulator$ conda activate simulator
@@ -11,7 +11,7 @@ This is a simple simulator engine which can be used to hit a URL 'x' number of t
 (simulator) API-Hitting-Simulator$ conda install requests
 ```
 
-## Run the app:
+### Run the app:
 ```
 (simulator) API-Hitting-Simulator$ export FLASK_APP=api.py 
 (simulator) API-Hitting-Simulator$ export FLASK_ENV=development
@@ -25,5 +25,5 @@ This is a simple simulator engine which can be used to hit a URL 'x' number of t
  * Debugger PIN: 240-336-825
 ```
 
-
+### Screenshot:
 <img width="1289" alt="Screen Shot 2019-11-28 at 3 17 43 PM" src="https://user-images.githubusercontent.com/4717349/69795725-b387ca00-11f2-11ea-961e-1b3abcaf6c65.png">
