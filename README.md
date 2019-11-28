@@ -26,3 +26,4 @@ This is a simple simulator engine which can be used to hit a URL 'x' number of t
 ```
 
 
+<img width="1289" alt="Screen Shot 2019-11-28 at 3 17 43 PM" src="https://user-images.githubusercontent.com/4717349/69795725-b387ca00-11f2-11ea-961e-1b3abcaf6c65.png">
